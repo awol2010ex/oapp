@@ -1,15 +1,10 @@
 package com.oapp.ui;
 
-import org.alexd.jsonrpc.JSONRPCClient;
-import org.alexd.jsonrpc.JSONRPCException;
-import org.alexd.jsonrpc.JSONRPCParams;
-
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ViewSwitcher;
 
 import com.oapp.R;
+import com.oapp.app.common.OAServiceHelper;
 import com.oapp.app.common.StringUtils;
 import com.oapp.app.common.UIHelper;
 
@@ -120,22 +116,7 @@ public class LoginDialog extends BaseActivity{
 			public void run() {
 				Message msg =new Message();
 				try {
-					boolean b =false ;
-			    	try {
-			    		JSONRPCClient client = JSONRPCClient.create("http://"+host+":8080/salesOA/MobileStaffServiceJSONRPC", JSONRPCParams.Versions.VERSION_2
-			    				);
-			        	client.setSoTimeout(300000);
-			        	client.setSoTimeout(300000);
-			    		//验证
-						b=client.callBoolean("authUser", account ,pwd);
-						
-						
-						
-					} catch (JSONRPCException e) {
-						// TODO Auto-generated catch block
-						Log.e("ERROR", "调用JSONRPC错误", e);
-						
-					}
+					boolean b =OAServiceHelper.authUser(account, pwd, host);//用户验证
 	                if(b){
 	                	msg.what = 1;//成功
 	                }else{
