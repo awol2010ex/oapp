@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OApp</string>
+    <string name="title_activity_main">销售OA</string>
+    
+    
+    <string name="main_menu_login">用户登录</string>
+    <string name="main_menu_logout">注销登录</string>
+     <string name="main_menu_exit">退出程序</string>
+    
+    <string name="app_menu_surelogout">确定退出程序吗？</string>
+    <string name="sure">确定</string>
+    <string name="cancle">取消</string>
+    
+    
+    <string name="login_dialog_logo">销售OA</string>
+    <string name="login_dialog_account">账号:</string>
+    <string name="login_dialog_account_hint">输入账号</string>
+    <string name="login_dialog_password">密码:</string>
+    <string name="login_dialog_password_hint">输入密码</string>
+    
+    
+    <string name="login_dialog_host">服务器:</string>
+    <string name="login_dialog_host_hint">输入服务器IP</string>
+    
+    
+    <string name="login_dialog_login">登  录</string>
+    <string name="login_dialog_rememberPW">记住密码:</string>
+    <string name="login_dialog_autoLogin">自动登录:</string>
+    <string name="login_dialog_rememberMe">记住我的登录信息</string>
+    
+    
+    
+    <string name="msg_login_account_null">请输入帐号</string>
+    <string name="msg_login_pwd_null">请输入密码</string>
+    
+</resources>
