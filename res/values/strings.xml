@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">OApp</string>
+    <string name="app_name">销售OA</string>
     <string name="title_activity_main">销售OA</string>
     
     
     <string name="main_menu_login">用户登录</string>
     <string name="main_menu_logout">注销登录</string>
-     <string name="main_menu_exit">退出程序</string>
+    <string name="main_menu_exit">退出程序</string>
     
     <string name="app_menu_surelogout">确定退出程序吗？</string>
     <string name="sure">确定</string>
@@ -42,4 +42,8 @@
     <string name="pull_to_refresh_tap_label">下拉可以刷新</string>
     <string name="pull_to_refresh_update">最近更新：</string>
     
+    
+    <string name="frame_title_info">信息</string>
+    <string name="frame_title_train">培训</string>
+    <string name="frame_title_other">其他</string>
 </resources>

@@ -7,10 +7,12 @@ import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.oapp.R;
 import com.oapp.app.common.UIHelper;
+import com.oapp.widget.PullToRefreshListView;
 
 public class MainActivity extends BaseActivity {
 	public static final int QUICKACTION_LOGIN_OR_LOGOUT = 0;//登录或注销
@@ -20,6 +22,15 @@ public class MainActivity extends BaseActivity {
 	
 	private ImageView fbSetting;//设置按钮
 	
+	
+	
+	private PullToRefreshListView lvInfo;//信息发布列表
+	private PullToRefreshListView lvTrain;//培训列表
+	
+	
+	private Button framebtn_info;//信息
+	private Button framebtn_train;//培训
+	private Button framebtn_other;//其他
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +40,11 @@ public class MainActivity extends BaseActivity {
 		this.initQuickActionGrid();
 		//初始化底部栏
 		this.initFootBar();
+		 /**
+	     * 初始化各个主页的按钮(资讯)
+	     */
+	    initFrameButton();
+		this.initFrameListView();//初始化列表
 	}
 	/**
      * 初始化快捷栏
@@ -70,6 +86,44 @@ public class MainActivity extends BaseActivity {
     			mGrid.show(v);
     		}
     	});    	
+    }
+    /**
+     * 初始化各个主页的按钮(资讯)
+     */
+    private void initFrameButton()
+    {
+    	//初始化按钮控件
+    	framebtn_info = (Button)findViewById(R.id.frame_btn_info);//信息
+    	framebtn_train = (Button)findViewById(R.id.frame_btn_train);//培训
+    	framebtn_other = (Button)findViewById(R.id.frame_btn_other);//其他
+    	
+    	
+    	
+    	//设置首选择项
+    	framebtn_info.setEnabled(false);
+    }
+    /**
+     * 初始化所有ListView
+     */
+    private void initFrameListView()
+    {
+    	//初始化listview控件
+		this.initInfoListView();//信息列表
+		this.initTrainListView();//培训列表
+    }
+    /**
+     * 初始化信息列表
+     */
+    private void initInfoListView()
+    {
+    	
+    }
+    /**
+     * 初始化培训列表
+     */
+    private void initTrainListView()
+    {
+    	
     }
     
 }
