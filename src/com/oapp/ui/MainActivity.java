@@ -5,12 +5,20 @@ import greendroid.widget.MyQuickAction;
 import greendroid.widget.QuickActionGrid;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.oapp.R;
+import com.oapp.app.adapter.ListViewInfoAdapter;
+import com.oapp.app.bean.TBizInfomationReleaseQueryVO;
 import com.oapp.app.common.UIHelper;
 import com.oapp.widget.PullToRefreshListView;
 
@@ -28,9 +36,27 @@ public class MainActivity extends BaseActivity {
 	private PullToRefreshListView lvTrain;//培训列表
 	
 	
+	private View lvInfo_footer;//信息Footer
+	
+	
+	private TextView lvInfo_foot_more;//信息more
+	
+	private ProgressBar lvInfo_foot_progress;//信息progress
+	
+	
+	
+	
+	private ListViewInfoAdapter lvInfoAdapter;//信息
+	
+	
 	private Button framebtn_info;//信息
 	private Button framebtn_train;//培训
 	private Button framebtn_other;//其他
+	
+	//信息列表
+	private List<TBizInfomationReleaseQueryVO> lvInfoData = new ArrayList<TBizInfomationReleaseQueryVO>();
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,7 +142,17 @@ public class MainActivity extends BaseActivity {
      */
     private void initInfoListView()
     {
+    	lvInfoAdapter = new ListViewInfoAdapter(this, lvInfoData, R.layout.info_listitem);  
     	
+    	
+    	lvInfo_footer = getLayoutInflater().inflate(R.layout.listview_footer, null);
+        lvInfo_foot_more = (TextView)lvInfo_footer.findViewById(R.id.listview_foot_more);
+        lvInfo_foot_progress = (ProgressBar)lvInfo_footer.findViewById(R.id.listview_foot_progress);
+        
+        
+        lvInfo = (PullToRefreshListView)findViewById(R.id.frame_listview_info);
+        lvInfo.addFooterView(lvInfo_footer);//添加底部视图  必须在setAdapter前
+        lvInfo.setAdapter(lvInfoAdapter); 
     }
     /**
      * 初始化培训列表
