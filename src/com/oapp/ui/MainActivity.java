@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,7 +27,19 @@ import com.oapp.widget.PullToRefreshListView;
 public class MainActivity extends BaseActivity {
 	public static final int QUICKACTION_LOGIN_OR_LOGOUT = 0;//登录或注销
 	public static final int QUICKACTION_EXIT = 1;
+	
+	
+	private int curInfoCatalog = 1;
+	
+	
+	private TextView mHeadTitle;//头部标题
+	private ProgressBar mHeadProgress;//头部进度
+	
+	
+	
 	private QuickActionWidget mGrid;//快捷栏控件
+	
+	
 	
 	
 	private ImageView fbSetting;//设置按钮
@@ -61,7 +75,10 @@ public class MainActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		/**
+	     * 初始化头部视图
+	     */
+	    initHeadView();
 		//初始化快捷栏
 		this.initQuickActionGrid();
 		//初始化底部栏
@@ -72,6 +89,16 @@ public class MainActivity extends BaseActivity {
 	    initFrameButton();
 		this.initFrameListView();//初始化列表
 	}
+	
+	/**
+     * 初始化头部视图
+     */
+    private void initHeadView()
+    {
+    	mHeadTitle = (TextView)findViewById(R.id.main_head_title);
+    	mHeadProgress = (ProgressBar)findViewById(R.id.main_head_progress);
+    }
+	
 	/**
      * 初始化快捷栏
      */
@@ -161,5 +188,38 @@ public class MainActivity extends BaseActivity {
     {
     	
     }
+    
+    
+    /**
+     * 线程加载信息发布数据
+     * @param catalog 分类
+     * @param pageIndex 当前页数
+     * @param handler 处理器
+     * @param action 动作标识
+     */
+	private void loadLvInfoData(final int catalog,final int pageIndex,final Handler handler,final int action){ 
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);		
+		new Thread(){
+			public void run() {				
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if(action == UIHelper.LISTVIEW_ACTION_REFRESH || action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				//try {					
+					//NewsList list = appContext.getNewsList(catalog, pageIndex, isRefresh);				
+					//msg.what = list.getPageSize();
+					//msg.obj = list;
+	            //} catch (AppException e) {
+	           // 	e.printStackTrace();
+	           // 	msg.what = -1;
+	           // 	msg.obj = e;
+	           // }
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_INFO;
+                if(curInfoCatalog == catalog)
+                	handler.sendMessage(msg);
+			}
+		}.start();
+	} 
     
 }

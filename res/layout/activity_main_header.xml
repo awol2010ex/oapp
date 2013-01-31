@@ -10,4 +10,12 @@
 		android:layout_centerVertical="true"
 		android:layout_marginLeft="5.0dip"
 		android:text="@string/title_activity_main"/>
+  	
+  	<ProgressBar 
+		android:id="@+id/main_head_progress" 
+		style="@style/loading_small"
+		android:layout_toRightOf="@id/main_head_title"
+		android:layout_centerVertical="true"
+		android:layout_marginLeft="5.0dip"
+		android:visibility="gone"/>
 </RelativeLayout>
