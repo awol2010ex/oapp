@@ -44,7 +44,7 @@ public class OAServiceHelper {
 				client.setSoTimeout(300000);
 				client.setSoTimeout(300000);
 				// 验证
-				b = client.callJSONArray("getMyInfoList", staffid);
+				b = client.callJSONArray("getMyInfoList", staffid ,offset ,pageSize);
 
 			} catch (JSONRPCException e) {
 				// TODO Auto-generated catch block

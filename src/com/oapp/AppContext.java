@@ -1,7 +1,12 @@
 package com.oapp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.Context;
@@ -10,13 +15,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.Message;
+import android.util.Log;
 
-import com.oapp.app.bean.TBizInfomationReleaseQueryVO;
+import com.oapp.app.bean.TBizInfomationReleaseLookVO;
 import com.oapp.app.common.OAServiceHelper;
 import com.oapp.app.common.StringUtils;
-import com.oapp.app.common.UIHelper;
 
 /**
  * 全局应用程序类：用于保存和调用全局应用配置及访问网络数据
@@ -137,21 +140,44 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws ApiException
 	 */
-	public List<TBizInfomationReleaseQueryVO> getInfoList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
-		List<TBizInfomationReleaseQueryVO> list = null;
-		if(isNetworkConnected() &&  isRefresh) {
-			/*
+	public List<TBizInfomationReleaseLookVO> getInfoList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
+		List<TBizInfomationReleaseLookVO> list = null;
+		if(isNetworkConnected() &&  staffid !=null && host!=null) {
+			
 			try{
 				
-				OAServiceHelper.getMyInfoList(staffid, host, offset, pageSize)
+				JSONArray  array  =OAServiceHelper.getMyInfoList(staffid, host, pageIndex*PAGE_SIZE ,PAGE_SIZE);
+				
+				
+				if(array!=null && array.length()>0){
+					  list =new ArrayList<TBizInfomationReleaseLookVO>();
+					  
+					  for(int i=0,s=array.length();i<s;i++){
+						  JSONObject  o=array.getJSONObject(i);
+						  
+						  TBizInfomationReleaseLookVO vo= new TBizInfomationReleaseLookVO();
+						  vo.setId(o.getString("id"));//信息ID
+						  vo.setInfoTitle(o.getString("infoTitle"));//信息标题
+						  vo.setStaffName(o.getString("staffName"));//发布人
+						  
+						  //发布时间
+						  vo.setIssueDateTime(new Date(o.getJSONObject("issueDateTime").getLong("time")));
+						  list.add(vo);
+						  
+					  }
+				}
 			}catch(AppException e){
 				
 					throw e;
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.e("ERROR", "调用JSONRPC错误", e);
+				throw AppException.network(e);
 			}		
-			*/
+		
 		} else {
 			if(list == null)
-				list = new  ArrayList<TBizInfomationReleaseQueryVO>();
+				list = new  ArrayList<TBizInfomationReleaseLookVO>();
 		}
 		return list;
 	}

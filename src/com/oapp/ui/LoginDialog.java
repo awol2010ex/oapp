@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -117,12 +118,20 @@ public class LoginDialog extends BaseActivity {
 					
 					ac.setHost(host);//登录服务器
 					try {
-						ac.setStaffid(((JSONObject)(msg.obj)).getString("staffid"));//当前登录人员ID
+						ac.setStaffid(((JSONObject)(msg.obj)).getJSONObject("map").getString("staffid"));//当前登录人员ID
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						Log.e("ERROR", e.getLocalizedMessage());
 					}
 					
+					
+					//与主页面通讯
+					if(curLoginType == LOGIN_MAIN){
+						//跳转--加载用户动态
+						Intent intent = new Intent(LoginDialog.this, MainActivity.class);
+						intent.putExtra("LOGIN", true);
+						startActivity(intent);
+					}
 					
 					
 				} else if (msg.what == 0) {

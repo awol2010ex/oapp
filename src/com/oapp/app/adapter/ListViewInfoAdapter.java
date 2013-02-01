@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.oapp.R;
-import com.oapp.app.bean.TBizInfomationReleaseQueryVO;
+import com.oapp.app.bean.TBizInfomationReleaseLookVO;
 
 /**
  * 信息发布Adapter类
@@ -20,7 +20,7 @@ public class ListViewInfoAdapter extends BaseAdapter {
 	private java.text.SimpleDateFormat  sdf=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:dd");
 	
 	private Context 					context;//运行上下文
-	private List<TBizInfomationReleaseQueryVO> 					listItems;//数据集合
+	private List<TBizInfomationReleaseLookVO> 					listItems;//数据集合
 	private LayoutInflater 				listContainer;//视图容器
 	private int 						itemViewResource;//自定义项视图源 
 	static class ListItemView{				//自定义控件集合  
@@ -35,7 +35,7 @@ public class ListViewInfoAdapter extends BaseAdapter {
 	 * @param data
 	 * @param resource
 	 */
-	public ListViewInfoAdapter(Context context, List<TBizInfomationReleaseQueryVO> data,int resource) {
+	public ListViewInfoAdapter(Context context, List<TBizInfomationReleaseLookVO> data,int resource) {
 		this.context = context;			
 		this.listContainer = LayoutInflater.from(context);	//创建视图容器并设置上下文
 		this.itemViewResource = resource;
@@ -80,12 +80,12 @@ public class ListViewInfoAdapter extends BaseAdapter {
 		}	
 		
 		//设置文字和图片
-		TBizInfomationReleaseQueryVO info = listItems.get(position);
+		TBizInfomationReleaseLookVO info = listItems.get(position);
 		
 		listItemView.title.setText(info.getInfoTitle());
 		listItemView.title.setTag(info);//设置隐藏参数(实体类)
-		listItemView.author.setText(info.getStaffname());//发布人
-		listItemView.date.setText(sdf.format(info.getIssueDatetime()));//发布时间
+		listItemView.author.setText(info.getStaffName());//发布人
+		listItemView.date.setText(sdf.format(info.getIssueDateTime()));//发布时间
 		
 		
 		return convertView;
