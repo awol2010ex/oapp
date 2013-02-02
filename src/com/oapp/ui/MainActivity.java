@@ -60,10 +60,7 @@ public class MainActivity extends BaseActivity {
 	private Button framebtn_train;// 培训
 	private Button framebtn_other;// 其他
 
-	
-	
-	
-	private int lvInfoSumData;//信息
+	private int lvInfoSumData;// 信息
 	// 信息列表
 	private List<TBizInfomationReleaseLookVO> lvInfoData = new ArrayList<TBizInfomationReleaseLookVO>();
 
@@ -261,44 +258,50 @@ public class MainActivity extends BaseActivity {
 		lvInfo = (PullToRefreshListView) findViewById(R.id.frame_listview_info);
 		lvInfo.addFooterView(lvInfo_footer);// 添加底部视图 必须在setAdapter前
 		lvInfo.setAdapter(lvInfoAdapter);
-		
-		
+
 		lvInfo.setOnScrollListener(new AbsListView.OnScrollListener() {
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				lvInfo.onScrollStateChanged(view, scrollState);
-				
-				//数据为空--不用继续下面代码了
-				if(lvInfoData.isEmpty()) return;
-				
-				//判断是否滚动到底部
+
+				// 数据为空--不用继续下面代码了
+				if (lvInfoData.isEmpty())
+					return;
+
+				// 判断是否滚动到底部
 				boolean scrollEnd = false;
 				try {
-					if(view.getPositionForView(lvInfo_footer) == view.getLastVisiblePosition())
+					if (view.getPositionForView(lvInfo_footer) == view
+							.getLastVisiblePosition())
 						scrollEnd = true;
 				} catch (Exception e) {
 					scrollEnd = false;
 				}
-				
-				int lvDataState =Integer.parseInt(String.valueOf(lvInfo.getTag()));
-				if(scrollEnd && lvDataState==UIHelper.LISTVIEW_DATA_MORE)
-				{
+
+				int lvDataState = Integer.parseInt(String.valueOf(lvInfo
+						.getTag()));
+				if (scrollEnd && lvDataState == UIHelper.LISTVIEW_DATA_MORE) {
 					lvInfo.setTag(UIHelper.LISTVIEW_DATA_LOADING);
 					lvInfo_foot_more.setText(R.string.load_ing);
 					lvInfo_foot_progress.setVisibility(View.VISIBLE);
-					//当前pageIndex
-					int pageIndex = lvInfoSumData/AppContext.PAGE_SIZE;
-					loadLvInfoData(curInfoCatalog, pageIndex, lvInfoHandler, UIHelper.LISTVIEW_ACTION_SCROLL);
+					// 当前pageIndex
+					int pageIndex = lvInfoSumData / AppContext.PAGE_SIZE;
+					loadLvInfoData(curInfoCatalog, pageIndex, lvInfoHandler,
+							UIHelper.LISTVIEW_ACTION_SCROLL);
 				}
 			}
-			public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
-				lvInfo.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				lvInfo.onScroll(view, firstVisibleItem, visibleItemCount,
+						totalItemCount);
 			}
 		});
 		lvInfo.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
-            public void onRefresh() {
-            	loadLvInfoData(curInfoCatalog, 0, lvInfoHandler, UIHelper.LISTVIEW_ACTION_REFRESH);
-            }
-        });				
+			public void onRefresh() {
+				loadLvInfoData(curInfoCatalog, 0, lvInfoHandler,
+						UIHelper.LISTVIEW_ACTION_REFRESH);
+			}
+		});
 	}
 
 	/**
@@ -353,6 +356,8 @@ public class MainActivity extends BaseActivity {
 				lvInfoData.clear();// 先清除原有数据
 				lvInfoData.addAll(nlist);
 				break;
+			}
+			break;
 			case UIHelper.LISTVIEW_ACTION_SCROLL:
 				switch (objtype) {
 				case UIHelper.LISTVIEW_DATATYPE_INFO:
@@ -378,7 +383,7 @@ public class MainActivity extends BaseActivity {
 				}
 				break;
 			}
-		}
+		
 	}
 
 	/**
@@ -405,7 +410,7 @@ public class MainActivity extends BaseActivity {
 					isRefresh = true;
 				try {
 					List<TBizInfomationReleaseLookVO> list = appContext
-							.getInfoList(catalog, 0, isRefresh);
+							.getInfoList(catalog, pageIndex, isRefresh);
 					msg.what = list == null ? 0 : list.size();
 					msg.obj = list;
 				} catch (AppException e) {
