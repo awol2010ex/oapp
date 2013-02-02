@@ -3,7 +3,7 @@ package com.oapp.app.bean;
 import java.io.Serializable;
 
 
-
+//信息VO
 public class TBizInfomationReleaseLookVO 
 		implements
 			Serializable {

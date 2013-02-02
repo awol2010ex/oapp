@@ -26,6 +26,8 @@ import com.oapp.AppContext;
 import com.oapp.AppException;
 import com.oapp.R;
 import com.oapp.app.adapter.ListViewInfoAdapter;
+import com.oapp.app.adapter.ListViewTrainAdapter;
+import com.oapp.app.bean.TBizBringupNoticeVO;
 import com.oapp.app.bean.TBizInfomationReleaseLookVO;
 import com.oapp.app.common.UIHelper;
 import com.oapp.widget.PullToRefreshListView;
@@ -47,22 +49,31 @@ public class MainActivity extends BaseActivity {
 	private PullToRefreshListView lvTrain;// 培训列表
 
 	private View lvInfo_footer;// 信息Footer
+	private View lvTrain_footer;// 培训Footer
 
 	private TextView lvInfo_foot_more;// 信息more
+	private TextView lvTrain_foot_more;// 培训more
 
 	private ProgressBar lvInfo_foot_progress;// 信息progress
+	private ProgressBar lvTrain_foot_progress;// 培训progress
 
 	private ListViewInfoAdapter lvInfoAdapter;// 信息
+	private ListViewTrainAdapter lvTrainAdapter;// 培训
 
 	private Handler lvInfoHandler;// 信息
+	private Handler lvTrainHandler;// 培训
 
 	private Button framebtn_info;// 信息
 	private Button framebtn_train;// 培训
 	private Button framebtn_other;// 其他
 
 	private int lvInfoSumData;// 信息
+	private int lvTrainSumData;// 培训
 	// 信息列表
 	private List<TBizInfomationReleaseLookVO> lvInfoData = new ArrayList<TBizInfomationReleaseLookVO>();
+
+	// 培训列表
+	private List<TBizBringupNoticeVO> lvTrainData = new ArrayList<TBizBringupNoticeVO>();
 
 	private AppContext appContext;// 全局Context
 
@@ -161,6 +172,41 @@ public class MainActivity extends BaseActivity {
 
 		// 设置首选择项
 		framebtn_info.setEnabled(false);
+
+		// 信息
+		framebtn_info.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				framebtn_info.setEnabled(false);
+				framebtn_train.setEnabled(true);
+				framebtn_other.setEnabled(true);
+
+				lvInfo.setVisibility(View.VISIBLE);
+				lvTrain.setVisibility(View.GONE);
+			}
+		});
+
+		// 培训
+		framebtn_train.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				framebtn_info.setEnabled(true);
+				framebtn_train.setEnabled(false);
+				framebtn_other.setEnabled(true);
+
+				lvInfo.setVisibility(View.GONE);
+				lvTrain.setVisibility(View.VISIBLE);
+			}
+		});
+		// 其他
+		framebtn_other.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				framebtn_info.setEnabled(true);
+				framebtn_train.setEnabled(true);
+				framebtn_other.setEnabled(false);
+
+				lvInfo.setVisibility(View.GONE);
+				lvTrain.setVisibility(View.GONE);
+			}
+		});
 	}
 
 	/**
@@ -183,6 +229,10 @@ public class MainActivity extends BaseActivity {
 		// 信息
 		lvInfoHandler = this.getLvHandler(lvInfo, lvInfoAdapter,
 				lvInfo_foot_more, lvInfo_foot_progress, AppContext.PAGE_SIZE);
+
+		// 培训
+		lvTrainHandler = this.getLvHandler(lvTrain, lvTrainAdapter,
+				lvTrain_foot_more, lvTrain_foot_progress, AppContext.PAGE_SIZE);
 
 		// 加载信息数据
 		if (lvInfoData.isEmpty()) {
@@ -308,7 +358,19 @@ public class MainActivity extends BaseActivity {
 	 * 初始化培训列表
 	 */
 	private void initTrainListView() {
+		lvTrainAdapter = new ListViewTrainAdapter(this, lvTrainData,
+				R.layout.info_listitem);
 
+		lvTrain_footer = getLayoutInflater().inflate(R.layout.listview_footer,
+				null);
+		lvTrain_foot_more = (TextView) lvTrain_footer
+				.findViewById(R.id.listview_foot_more);
+		lvTrain_foot_progress = (ProgressBar) lvTrain_footer
+				.findViewById(R.id.listview_foot_progress);
+
+		lvTrain = (PullToRefreshListView) findViewById(R.id.frame_listview_train);
+		lvTrain.addFooterView(lvInfo_footer);// 添加底部视图 必须在setAdapter前
+		lvTrain.setAdapter(lvTrainAdapter);
 	}
 
 	/**
@@ -358,32 +420,32 @@ public class MainActivity extends BaseActivity {
 				break;
 			}
 			break;
-			case UIHelper.LISTVIEW_ACTION_SCROLL:
-				switch (objtype) {
-				case UIHelper.LISTVIEW_DATATYPE_INFO:
-					List<TBizInfomationReleaseLookVO> list = (List<TBizInfomationReleaseLookVO>) obj;
+		case UIHelper.LISTVIEW_ACTION_SCROLL:
+			switch (objtype) {
+			case UIHelper.LISTVIEW_DATATYPE_INFO:
+				List<TBizInfomationReleaseLookVO> list = (List<TBizInfomationReleaseLookVO>) obj;
 
-					if (lvInfoData.size() > 0) {
-						for (TBizInfomationReleaseLookVO info1 : list) {
-							boolean b = false;
-							for (TBizInfomationReleaseLookVO info2 : lvInfoData) {
-								if (info1.getId() == info2.getId()) {
-									b = true;
-									break;
-								}
+				if (lvInfoData.size() > 0) {
+					for (TBizInfomationReleaseLookVO info1 : list) {
+						boolean b = false;
+						for (TBizInfomationReleaseLookVO info2 : lvInfoData) {
+							if (info1.getId() == info2.getId()) {
+								b = true;
+								break;
 							}
-							if (!b)
-								lvInfoData.add(info1);
 						}
-					} else {
-						lvInfoData.addAll(list);
+						if (!b)
+							lvInfoData.add(info1);
 					}
-					break;
-
+				} else {
+					lvInfoData.addAll(list);
 				}
 				break;
+
 			}
-		
+			break;
+		}
+
 	}
 
 	/**
