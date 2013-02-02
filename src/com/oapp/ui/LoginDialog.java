@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -74,7 +76,7 @@ public class LoginDialog extends BaseActivity {
 				// 隐藏软键盘
 				imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-				String account = mAccount.getText().toString();// 账户
+				String account = mAccount.getText().toString().toUpperCase();// 账户
 				String pwd = mPwd.getText().toString();// 密码
 				String host = mHost.getText().toString();// 服务器IP
 				boolean isRememberMe = chb_rememberMe.isChecked();
@@ -96,9 +98,21 @@ public class LoginDialog extends BaseActivity {
 				loadingAnimation.start();
 				mViewSwitcher.showNext();
 
+				//登录验证
 				login(account, pwd, host, isRememberMe, v.getContext());
 			}
 		});
+		
+		//输出已保存登录信息
+		SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+		
+		String _account=sharedPreferences.getString("account", "");
+		String _pwd=sharedPreferences.getString("pwd", "");
+		String _host=sharedPreferences.getString("host", "");
+		
+		mAccount.setText(_account);// 账户
+		mPwd .setText(_pwd);// 密码
+		mHost.setText(_host);// 服务器IP
 
 	}
 
@@ -122,6 +136,16 @@ public class LoginDialog extends BaseActivity {
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						Log.e("ERROR", e.getLocalizedMessage());
+					}
+					
+					//保存登录帐号
+					if(isRememberMe){
+						SharedPreferences sharedPreferences = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+						Editor editor = sharedPreferences.edit();//获取编辑器  
+						editor.putString("account", account);  //帐号
+						editor.putString("pwd",pwd);  //密码
+						editor.putString("host",host); //服务器IP
+						editor.commit();//提交修改  
 					}
 					
 					
