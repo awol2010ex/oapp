@@ -70,9 +70,9 @@ public class ListViewTrainAdapter extends BaseAdapter {
 			
 			listItemView = new ListItemView();
 			//获取控件对象
-			listItemView.title = (TextView)convertView.findViewById(R.id.info_listitem_title);//标题
-			listItemView.author = (TextView)convertView.findViewById(R.id.info_listitem_author);//发布人
-			listItemView.date= (TextView)convertView.findViewById(R.id.info_listitem_date);//发布时间
+			listItemView.title = (TextView)convertView.findViewById(R.id.train_listitem_title);//标题
+			listItemView.author = (TextView)convertView.findViewById(R.id.train_listitem_author);//发布人
+			listItemView.date= (TextView)convertView.findViewById(R.id.train_listitem_date);//发布时间
 			
 			//设置控件集到convertView
 			convertView.setTag(listItemView);

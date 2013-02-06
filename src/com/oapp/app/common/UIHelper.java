@@ -29,7 +29,7 @@ public class UIHelper {
 	public final static int LISTVIEW_DATA_EMPTY = 0x04;
 	
 	public final static int LISTVIEW_DATATYPE_INFO = 0x01;//信息
-	
+	public final static int LISTVIEW_DATATYPE_TRAIN = 0x02;//培训
 	/** 全局web样式 */
 	public final static String WEB_STYLE = "<style>* {font-size:16px;line-height:20px;} p {color:#333;} a {color:#3E62A6;} img {max-width:310px;} " +
 			"img.alignleft {float:left;max-width:120px;margin:0 10px 5px 0;border:1px solid #ccc;background:#fff;padding:2px;} " +

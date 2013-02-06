@@ -17,6 +17,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.oapp.app.bean.TBizBringupNoticeVO;
 import com.oapp.app.bean.TBizInfomationReleaseLookVO;
 import com.oapp.app.common.OAServiceHelper;
 import com.oapp.app.common.StringUtils;
@@ -182,5 +183,55 @@ public class AppContext extends Application {
 		return list;
 	}
 	
+	
+	/**
+	 * 培训列表
+	 * @param catalog
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws ApiException
+	 */
+	public List<TBizBringupNoticeVO> getTrainList(int catalog, int pageIndex, boolean isRefresh) throws AppException {
+		List<TBizBringupNoticeVO> list = null;
+		if(isNetworkConnected() &&  staffid !=null && host!=null) {
+			
+			try{
+				
+				JSONArray  array  =OAServiceHelper.getMyTrainList(staffid, host, pageIndex*PAGE_SIZE ,PAGE_SIZE);
+				
+				
+				if(array!=null && array.length()>0){
+					  list =new ArrayList<TBizBringupNoticeVO>();
+					  
+					  for(int i=0,s=array.length();i<s;i++){
+						  JSONObject  o=array.getJSONObject(i).getJSONObject("map");
+						  
+						  TBizBringupNoticeVO vo= new TBizBringupNoticeVO();
+						  vo.setId(o.getString("id"));//培训通知ID
+						  vo.setTitle(o.getString("title"));//培训通知标题
+						  vo.setStaffname(o.getString("staffname"));//发布人
+						  
+						  //发布时间
+						  vo.setIssuedatetime(new Date(o.getJSONObject("issuedatetime").getJSONObject("map").getLong("time")));
+						  list.add(vo);
+						  
+					  }
+				}
+			}catch(AppException e){
+				
+					throw e;
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.e("ERROR", "调用JSONRPC错误", e);
+				throw AppException.network(e);
+			}		
+		
+		} else {
+			if(list == null)
+				list = new  ArrayList<TBizBringupNoticeVO>();
+		}
+		return list;
+	}
 	
 }

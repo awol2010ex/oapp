@@ -37,6 +37,7 @@ public class MainActivity extends BaseActivity {
 	public static final int QUICKACTION_EXIT = 1;
 
 	private int curInfoCatalog = 1;
+	private int curTrainCatalog = 2;
 
 	private TextView mHeadTitle;// 头部标题
 	private ProgressBar mHeadProgress;// 头部进度
@@ -107,6 +108,10 @@ public class MainActivity extends BaseActivity {
 		if (intent.getBooleanExtra("LOGIN", false)) {// 登录成功后发来通知并刷新信息列表
 			// 加载信息发布数据
 			this.loadLvInfoData(curInfoCatalog, 0, lvInfoHandler,
+					UIHelper.LISTVIEW_ACTION_INIT);
+
+			// 加载培训数据
+			this.loadLvTrainData(curTrainCatalog, 0, lvTrainHandler,
 					UIHelper.LISTVIEW_ACTION_INIT);
 		}
 	}
@@ -239,6 +244,12 @@ public class MainActivity extends BaseActivity {
 			loadLvInfoData(curInfoCatalog, 0, lvInfoHandler,
 					UIHelper.LISTVIEW_ACTION_INIT);
 		}
+
+		// 加载培训数据
+		if (lvTrainData.isEmpty()) {
+			loadLvTrainData(curTrainCatalog, 0, lvTrainHandler,
+					UIHelper.LISTVIEW_ACTION_INIT);
+		}
 	}
 
 	/**
@@ -359,7 +370,7 @@ public class MainActivity extends BaseActivity {
 	 */
 	private void initTrainListView() {
 		lvTrainAdapter = new ListViewTrainAdapter(this, lvTrainData,
-				R.layout.info_listitem);
+				R.layout.train_listitem);
 
 		lvTrain_footer = getLayoutInflater().inflate(R.layout.listview_footer,
 				null);
@@ -369,8 +380,52 @@ public class MainActivity extends BaseActivity {
 				.findViewById(R.id.listview_foot_progress);
 
 		lvTrain = (PullToRefreshListView) findViewById(R.id.frame_listview_train);
-		lvTrain.addFooterView(lvInfo_footer);// 添加底部视图 必须在setAdapter前
+		lvTrain.addFooterView(lvTrain_footer);// 添加底部视图 必须在setAdapter前
 		lvTrain.setAdapter(lvTrainAdapter);
+
+		lvTrain.setOnScrollListener(new AbsListView.OnScrollListener() {
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				lvTrain.onScrollStateChanged(view, scrollState);
+
+				// 数据为空--不用继续下面代码了
+				if (lvTrainData.isEmpty())
+					return;
+
+				// 判断是否滚动到底部
+				boolean scrollEnd = false;
+				try {
+					if (view.getPositionForView(lvTrain_footer) == view
+							.getLastVisiblePosition())
+						scrollEnd = true;
+				} catch (Exception e) {
+					scrollEnd = false;
+				}
+
+				int lvDataState = Integer.parseInt(String.valueOf(lvTrain
+						.getTag()));
+				if (scrollEnd && lvDataState == UIHelper.LISTVIEW_DATA_MORE) {
+					lvTrain.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					lvTrain_foot_more.setText(R.string.load_ing);
+					lvTrain_foot_progress.setVisibility(View.VISIBLE);
+					// 当前pageIndex
+					int pageIndex = lvTrainSumData / AppContext.PAGE_SIZE;
+					loadLvTrainData(curTrainCatalog, pageIndex, lvTrainHandler,
+							UIHelper.LISTVIEW_ACTION_SCROLL);
+				}
+			}
+
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				lvTrain.onScroll(view, firstVisibleItem, visibleItemCount,
+						totalItemCount);
+			}
+		});
+		lvTrain.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+			public void onRefresh() {
+				loadLvTrainData(curTrainCatalog, 0, lvTrainHandler,
+						UIHelper.LISTVIEW_ACTION_REFRESH);
+			}
+		});
 	}
 
 	/**
@@ -395,12 +450,12 @@ public class MainActivity extends BaseActivity {
 			int newdata = 0;// 新加载数据-只有刷新动作才会使用到
 			switch (objtype) {
 			case UIHelper.LISTVIEW_DATATYPE_INFO:
-				List<TBizInfomationReleaseLookVO> nlist = (List<TBizInfomationReleaseLookVO>) obj;
+				List<TBizInfomationReleaseLookVO> nlist_info = (List<TBizInfomationReleaseLookVO>) obj;
 
 				lvInfoSumData = what;
 				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
 					if (lvInfoData.size() > 0) {
-						for (TBizInfomationReleaseLookVO info1 : nlist) {
+						for (TBizInfomationReleaseLookVO info1 : nlist_info) {
 							boolean b = false;
 							for (TBizInfomationReleaseLookVO info2 : lvInfoData) {
 								if (info1.getId() == info2.getId()) {
@@ -416,17 +471,41 @@ public class MainActivity extends BaseActivity {
 					}
 				}
 				lvInfoData.clear();// 先清除原有数据
-				lvInfoData.addAll(nlist);
+				lvInfoData.addAll(nlist_info);
+				break;
+			case UIHelper.LISTVIEW_DATATYPE_TRAIN:
+				List<TBizBringupNoticeVO> nlist_train = (List<TBizBringupNoticeVO>) obj;
+
+				lvTrainSumData = what;
+				if (actiontype == UIHelper.LISTVIEW_ACTION_REFRESH) {
+					if (lvTrainData.size() > 0) {
+						for (TBizBringupNoticeVO info1 : nlist_train) {
+							boolean b = false;
+							for (TBizBringupNoticeVO info2 : lvTrainData) {
+								if (info1.getId() == info2.getId()) {
+									b = true;
+									break;
+								}
+							}
+							if (!b)
+								newdata++;
+						}
+					} else {
+						newdata = what;
+					}
+				}
+				lvTrainData.clear();// 先清除原有数据
+				lvTrainData.addAll(nlist_train);
 				break;
 			}
 			break;
 		case UIHelper.LISTVIEW_ACTION_SCROLL:
 			switch (objtype) {
-			case UIHelper.LISTVIEW_DATATYPE_INFO:
-				List<TBizInfomationReleaseLookVO> list = (List<TBizInfomationReleaseLookVO>) obj;
+			case UIHelper.LISTVIEW_DATATYPE_INFO:// 信息
+				List<TBizInfomationReleaseLookVO> list_info = (List<TBizInfomationReleaseLookVO>) obj;
 
 				if (lvInfoData.size() > 0) {
-					for (TBizInfomationReleaseLookVO info1 : list) {
+					for (TBizInfomationReleaseLookVO info1 : list_info) {
 						boolean b = false;
 						for (TBizInfomationReleaseLookVO info2 : lvInfoData) {
 							if (info1.getId() == info2.getId()) {
@@ -438,7 +517,26 @@ public class MainActivity extends BaseActivity {
 							lvInfoData.add(info1);
 					}
 				} else {
-					lvInfoData.addAll(list);
+					lvInfoData.addAll(list_info);
+				}
+				break;
+			case UIHelper.LISTVIEW_DATATYPE_TRAIN:// 培训
+				List<TBizBringupNoticeVO> list_train = (List<TBizBringupNoticeVO>) obj;
+
+				if (lvTrainData.size() > 0) {
+					for (TBizBringupNoticeVO info1 : list_train) {
+						boolean b = false;
+						for (TBizBringupNoticeVO info2 : lvTrainData) {
+							if (info1.getId() == info2.getId()) {
+								b = true;
+								break;
+							}
+						}
+						if (!b)
+							lvTrainData.add(info1);
+					}
+				} else {
+					lvTrainData.addAll(list_train);
 				}
 				break;
 
@@ -483,6 +581,46 @@ public class MainActivity extends BaseActivity {
 				msg.arg1 = action;
 				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_INFO;
 				if (curInfoCatalog == catalog)
+					handler.sendMessage(msg);
+			}
+		}.start();
+	}
+
+	/**
+	 * 线程加载培训数据
+	 * 
+	 * @param catalog
+	 *            分类
+	 * @param pageIndex
+	 *            当前页数
+	 * @param handler
+	 *            处理器
+	 * @param action
+	 *            动作标识
+	 */
+	private void loadLvTrainData(final int catalog, final int pageIndex,
+			final Handler handler, final int action) {
+		mHeadProgress.setVisibility(ProgressBar.VISIBLE);
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if (action == UIHelper.LISTVIEW_ACTION_REFRESH
+						|| action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {
+					List<TBizBringupNoticeVO> list = appContext.getTrainList(
+							catalog, pageIndex, isRefresh);
+					msg.what = list == null ? 0 : list.size();
+					msg.obj = list;
+				} catch (AppException e) {
+					Log.e("ERROR", "远程调用查询信息列表", e);
+					msg.what = -1;
+					msg.obj = e;
+				}
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_TRAIN;
+				if (curTrainCatalog == catalog)
 					handler.sendMessage(msg);
 			}
 		}.start();
