@@ -4,6 +4,7 @@ import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
 import org.alexd.jsonrpc.JSONRPCParams;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -44,11 +45,15 @@ public class OAServiceHelper {
 				client.setSoTimeout(300000);
 				client.setSoTimeout(300000);
 				// 验证
-				b = client.callJSONArray("getMyInfoList", staffid ,offset ,pageSize);
+				b = client.callJSONObject("getMyInfoList", staffid ,offset ,pageSize).getJSONArray("list");
 
 			} catch (JSONRPCException e) {
 				// TODO Auto-generated catch block
 				Log.e("ERROR", "调用JSONRPC错误", e);
+				throw AppException.network(e);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.e("ERROR", "JSON错误", e);
 				throw AppException.network(e);
 			}
 

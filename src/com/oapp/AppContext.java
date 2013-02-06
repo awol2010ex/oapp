@@ -153,7 +153,7 @@ public class AppContext extends Application {
 					  list =new ArrayList<TBizInfomationReleaseLookVO>();
 					  
 					  for(int i=0,s=array.length();i<s;i++){
-						  JSONObject  o=array.getJSONObject(i);
+						  JSONObject  o=array.getJSONObject(i).getJSONObject("map");
 						  
 						  TBizInfomationReleaseLookVO vo= new TBizInfomationReleaseLookVO();
 						  vo.setId(o.getString("id"));//信息ID
@@ -161,7 +161,7 @@ public class AppContext extends Application {
 						  vo.setStaffName(o.getString("staffName"));//发布人
 						  
 						  //发布时间
-						  vo.setIssueDateTime(new Date(o.getJSONObject("issueDateTime").getLong("time")));
+						  vo.setIssueDateTime(new Date(o.getJSONObject("issueDateTime").getJSONObject("map").getLong("time")));
 						  list.add(vo);
 						  
 					  }
