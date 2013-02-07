@@ -16,6 +16,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -320,6 +321,27 @@ public class MainActivity extends BaseActivity {
 		lvInfo.addFooterView(lvInfo_footer);// 添加底部视图 必须在setAdapter前
 		lvInfo.setAdapter(lvInfoAdapter);
 
+		lvInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+	        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	        		//点击头部、底部栏无效
+	        		if(position == 0 || view == lvInfo_footer) return;
+	        		
+	        		TBizInfomationReleaseLookVO info = null;        		
+	        		//判断是否是TextView
+	        		if(view instanceof TextView){
+	        			info = (TBizInfomationReleaseLookVO)view.getTag();
+	        		}else{
+	        			TextView tv = (TextView)view.findViewById(R.id.info_listitem_title);
+	        			info = (TBizInfomationReleaseLookVO)tv.getTag();
+	        		}
+	        		if(info == null) return;
+	        		
+	        		//跳转到信息详情
+	        		UIHelper.showInfoDetail(view.getContext(), info.getId());
+	        	}        	
+			});
+		
+		
 		lvInfo.setOnScrollListener(new AbsListView.OnScrollListener() {
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				lvInfo.onScrollStateChanged(view, scrollState);

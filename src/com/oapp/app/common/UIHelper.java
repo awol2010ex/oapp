@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.oapp.AppManager;
 import com.oapp.R;
+import com.oapp.ui.InfoDetail;
 import com.oapp.ui.LoginDialog;
 import com.oapp.ui.MainActivity;
 
@@ -160,5 +162,29 @@ public class UIHelper {
 		});
 		builder.show();
 	}
+	
+	/**
+	 * 获取webviewClient对象
+	 * @return
+	 */
+	public static WebViewClient getWebViewClient(){
+		return new WebViewClient(){
+			
+		};
+	}
+	
+	/**
+	 * 显示信息详情
+	 * @param context
+	 * @param infoId
+	 */
+	public static void showInfoDetail(Context context, String infoId)
+	{
+		Intent intent = new Intent(context, InfoDetail.class);
+		intent.putExtra("infoId", infoId);
+		context.startActivity(intent);
+	}
+	
+	
 	
 }
