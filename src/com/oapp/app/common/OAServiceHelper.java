@@ -35,29 +35,50 @@ public class OAServiceHelper {
 
 		return b;
 	}
-	
-	
-	// 用户验证
-		public static JSONObject getInfo(String infoId, String host)
-				throws AppException {
-			JSONObject b = null;
-			try {
-				JSONRPCClient client = JSONRPCClient.create("http://" + host
-						+ ":8080/salesOA/MobileInfoServiceJSONRPC",
-						JSONRPCParams.Versions.VERSION_2);
-				client.setSoTimeout(300000);
-				client.setSoTimeout(300000);
-				// 信息详细
-				b = client.callJSONObject("getInfo", infoId);
 
-			} catch (JSONRPCException e) {
-				// TODO Auto-generated catch block
-				Log.e("ERROR", "调用JSONRPC错误", e);
-				throw AppException.network(e);
-			}
+	// 信息
+	public static JSONObject getInfo(String infoId, String host)
+			throws AppException {
+		JSONObject b = null;
+		try {
+			JSONRPCClient client = JSONRPCClient.create("http://" + host
+					+ ":8080/salesOA/MobileInfoServiceJSONRPC",
+					JSONRPCParams.Versions.VERSION_2);
+			client.setSoTimeout(300000);
+			client.setSoTimeout(300000);
+			// 信息详细
+			b = client.callJSONObject("getInfo", infoId);
 
-			return b;
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			Log.e("ERROR", "调用JSONRPC错误", e);
+			throw AppException.network(e);
 		}
+
+		return b;
+	}
+
+	// 培训通知
+	public static JSONObject getTrain(String trainId, String host)
+			throws AppException {
+		JSONObject b = null;
+		try {
+			JSONRPCClient client = JSONRPCClient.create("http://" + host
+					+ ":8080/salesOA/MobileInfoServiceJSONRPC",
+					JSONRPCParams.Versions.VERSION_2);
+			client.setSoTimeout(300000);
+			client.setSoTimeout(300000);
+			// 培训通知
+			b = client.callJSONObject("getTrain", trainId);
+
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			Log.e("ERROR", "调用JSONRPC错误", e);
+			throw AppException.network(e);
+		}
+		
+		return b;
+	}
 
 	// 信息列表
 	public static JSONArray getMyInfoList(String staffid, String host,

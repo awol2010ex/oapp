@@ -40,6 +40,7 @@
         
         
         <activity android:name=".ui.InfoDetail" android:theme="@style/Theme.SlideTop" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"/>
+		<activity android:name=".ui.TrainDetail" android:theme="@style/Theme.SlideTop" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"/>
 		
     </application>
   

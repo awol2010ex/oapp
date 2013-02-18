@@ -225,6 +225,40 @@ public class AppContext extends Application {
 		return null;
 	}
 
+	
+	/**
+	 * 培训通知
+	 */
+	public TBizBringupNoticeVO getTrain(String trainId) throws AppException {
+		TBizBringupNoticeVO vo = null;
+		if (isNetworkConnected() && trainId != null && host != null) {
+
+			try {
+
+				JSONObject o = OAServiceHelper.getTrain(trainId, host)
+						.getJSONObject("map");
+
+				vo = new TBizBringupNoticeVO();
+				vo.setId(o.getString("id"));// 培训ID
+				vo.setTitle(o.getString("title"));// 培训标题
+				vo.setStaffname(o.getString("staffname"));// 发布人
+				vo.setIssuedatetime(new Date(o.getJSONObject("issuedatetime").getJSONObject("map")//发布时间
+						.getLong("time")));
+				vo.setAddress(o.getString("address"));//地址
+				vo.setBatch(o.getInt("batch"));//批次
+				vo.setOtherThing(o.getString("otherThing"));//其他
+				
+				
+				return vo;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				Log.e("ERROR", "调用JSONRPC错误", e);
+				throw AppException.network(e);
+			}
+
+		}
+		return null;
+	}
 	/**
 	 * 培训列表
 	 * 

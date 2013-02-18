@@ -14,6 +14,7 @@ import com.oapp.R;
 import com.oapp.ui.InfoDetail;
 import com.oapp.ui.LoginDialog;
 import com.oapp.ui.MainActivity;
+import com.oapp.ui.TrainDetail;
 
 /**
  * 应用程序UI工具包：封装UI相关的一些操作
@@ -184,6 +185,21 @@ public class UIHelper {
 		intent.putExtra("infoId", infoId);
 		context.startActivity(intent);
 	}
+	
+	
+	/**
+	 * 显示培训通知
+	 * @param context
+	 * @param infoId
+	 */
+	public static void showTrainDetail(Context context, String trainId)
+	{
+		Intent intent = new Intent(context, TrainDetail.class);
+		intent.putExtra("trainId", trainId);
+		context.startActivity(intent);
+	}
+	
+	
 	
 	
 	

@@ -322,26 +322,29 @@ public class MainActivity extends BaseActivity {
 		lvInfo.setAdapter(lvInfoAdapter);
 
 		lvInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	        		//点击头部、底部栏无效
-	        		if(position == 0 || view == lvInfo_footer) return;
-	        		
-	        		TBizInfomationReleaseLookVO info = null;        		
-	        		//判断是否是TextView
-	        		if(view instanceof TextView){
-	        			info = (TBizInfomationReleaseLookVO)view.getTag();
-	        		}else{
-	        			TextView tv = (TextView)view.findViewById(R.id.info_listitem_title);
-	        			info = (TBizInfomationReleaseLookVO)tv.getTag();
-	        		}
-	        		if(info == null) return;
-	        		
-	        		//跳转到信息详情
-	        		UIHelper.showInfoDetail(view.getContext(), info.getId());
-	        	}        	
-			});
-		
-		
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// 点击头部、底部栏无效
+				if (position == 0 || view == lvInfo_footer)
+					return;
+
+				TBizInfomationReleaseLookVO info = null;
+				// 判断是否是TextView
+				if (view instanceof TextView) {
+					info = (TBizInfomationReleaseLookVO) view.getTag();
+				} else {
+					TextView tv = (TextView) view
+							.findViewById(R.id.info_listitem_title);
+					info = (TBizInfomationReleaseLookVO) tv.getTag();
+				}
+				if (info == null)
+					return;
+
+				// 跳转到信息详情
+				UIHelper.showInfoDetail(view.getContext(), info.getId());
+			}
+		});
+
 		lvInfo.setOnScrollListener(new AbsListView.OnScrollListener() {
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				lvInfo.onScrollStateChanged(view, scrollState);
@@ -405,6 +408,32 @@ public class MainActivity extends BaseActivity {
 		lvTrain.addFooterView(lvTrain_footer);// 添加底部视图 必须在setAdapter前
 		lvTrain.setAdapter(lvTrainAdapter);
 
+		lvTrain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// 点击头部、底部栏无效
+				if (position == 0 || view == lvTrain_footer)
+					return;
+
+				TBizBringupNoticeVO train = null;
+				// 判断是否是TextView
+				if (view instanceof TextView) {
+					train = (TBizBringupNoticeVO) view.getTag();
+				} else {
+					TextView tv = (TextView) view
+							.findViewById(R.id.train_listitem_title);
+					train = (TBizBringupNoticeVO) tv.getTag();
+				}
+				if (train == null)
+					return;
+
+				// 跳转到信息详情
+				UIHelper.showTrainDetail(view.getContext(), train.getId());
+			}
+		});
+		
+		
+		
 		lvTrain.setOnScrollListener(new AbsListView.OnScrollListener() {
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				lvTrain.onScrollStateChanged(view, scrollState);
