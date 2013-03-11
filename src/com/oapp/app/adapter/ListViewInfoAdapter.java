@@ -85,6 +85,7 @@ public class ListViewInfoAdapter extends BaseAdapter {
 		listItemView.title.setText(info.getInfoTitle());
 		listItemView.title.setTag(info);//设置隐藏参数(实体类)
 		listItemView.author.setText(info.getStaffName());//发布人
+		if(info.getIssueDateTime()!=null)
 		listItemView.date.setText(sdf.format(info.getIssueDateTime()));//发布时间
 		
 		

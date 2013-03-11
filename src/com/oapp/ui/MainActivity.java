@@ -30,6 +30,7 @@ import com.oapp.app.adapter.ListViewInfoAdapter;
 import com.oapp.app.adapter.ListViewTrainAdapter;
 import com.oapp.app.bean.TBizBringupNoticeVO;
 import com.oapp.app.bean.TBizInfomationReleaseLookVO;
+import com.oapp.app.common.DBManager;
 import com.oapp.app.common.UIHelper;
 import com.oapp.widget.PullToRefreshListView;
 
@@ -83,6 +84,9 @@ public class MainActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//初始化数据库
+		DBManager.getInstance(this);
+		
 		appContext = (AppContext) getApplication();// 全局context
 
 		setContentView(R.layout.activity_main);
@@ -431,9 +435,7 @@ public class MainActivity extends BaseActivity {
 				UIHelper.showTrainDetail(view.getContext(), train.getId());
 			}
 		});
-		
-		
-		
+
 		lvTrain.setOnScrollListener(new AbsListView.OnScrollListener() {
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				lvTrain.onScrollStateChanged(view, scrollState);

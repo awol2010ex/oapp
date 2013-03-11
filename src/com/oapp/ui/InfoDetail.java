@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -172,13 +171,16 @@ public class InfoDetail extends BaseActivity {
 			public void run() {
                 Message msg = new Message();
 				try {
-					infoDetail = ((AppContext)getApplication()).getInfo(infoId);
+					infoDetail = ((AppContext)getApplication()).getInfo(infoId);//取得信息
+					
+					
+					
 	                msg.what = (infoDetail!=null) ? 1 : 0;
-	            } catch (AppException e) {
+	            } catch (Exception e) {
 	                e.printStackTrace();
 	            	msg.what = -1;
 	            	msg.obj = e;
-	            }				
+	            } 			
                 mHandler.sendMessage(msg);
 			}
 		}.start();

@@ -31,7 +31,7 @@ public class TBizInfomationReleaseVO
 	private java.lang.String strDate;
 	private java.lang.String templetId;
 	
-	private Integer iscancel;//�Ƿ��ѳ���
+	private Integer iscancel;
 
 	public Integer getIscancel() {
 		return iscancel;

@@ -22,7 +22,7 @@ public class TBizInfomationReleaseLookVO
 	private java.util.Date  issueDateTime;
 	private java.lang.Integer readerState;
 	private java.lang.Integer instancy;
-	private String email;;
+	private String email;
 	
 	private Integer iscancel;
 	public Integer getIscancel() {

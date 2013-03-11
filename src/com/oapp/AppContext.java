@@ -20,6 +20,7 @@ import android.util.Log;
 import com.oapp.app.bean.TBizBringupNoticeVO;
 import com.oapp.app.bean.TBizInfomationReleaseLookVO;
 import com.oapp.app.bean.TBizInfomationReleaseVO;
+import com.oapp.app.common.DBManager;
 import com.oapp.app.common.OAServiceHelper;
 import com.oapp.app.common.StringUtils;
 
@@ -188,8 +189,24 @@ public class AppContext extends Application {
 			}
 
 		} else {
-			if (list == null)
+			if (list == null) {
 				list = new ArrayList<TBizInfomationReleaseLookVO>();
+
+				List<TBizInfomationReleaseVO> queryList = DBManager
+						.getInstance().queryInfo();
+				if (queryList != null && queryList.size() > 0) {
+					for (TBizInfomationReleaseVO info : queryList) {
+						TBizInfomationReleaseLookVO vo = new TBizInfomationReleaseLookVO();
+						vo.setId(info.getId());// 信息ID
+						vo.setInfoTitle(info.getInfoTitle());// 信息标题
+						vo.setStaffName(info.getStaffName());// 发布人
+
+						// 发布时间
+						vo.setIssueDateTime(info.getIssueDatetime());
+						list.add(vo);
+					}
+				}
+			}
 		}
 		return list;
 	}
@@ -211,9 +228,20 @@ public class AppContext extends Application {
 				vo.setInfoTitle(o.getString("infoTitle"));// 信息标题
 				vo.setStaffName(o.getString("staffName"));// 发布人
 				vo.setInfoContent(o.getString("infoContent"));// 发布内容
-				vo.setIssueDatetime(new Date(o.getJSONObject("issueDatetime").getJSONObject("map")//发布时间
+				vo.setIssueDatetime(new Date(o.getJSONObject("issueDatetime")
+						.getJSONObject("map")// 发布时间
 						.getLong("time")));
-				
+
+				List<TBizInfomationReleaseVO> infos = DBManager.getInstance()
+						.queryInfo(vo.getId());
+				if (infos.size() == 0) {
+					// 缓存到内部数据库
+					DBManager.getInstance().addInfo(vo);
+				} else {
+					// 更新
+					DBManager.getInstance().updateInfo(vo);
+				}
+
 				return vo;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -225,7 +253,6 @@ public class AppContext extends Application {
 		return null;
 	}
 
-	
 	/**
 	 * 培训通知
 	 */
@@ -242,13 +269,13 @@ public class AppContext extends Application {
 				vo.setId(o.getString("id"));// 培训ID
 				vo.setTitle(o.getString("title"));// 培训标题
 				vo.setStaffname(o.getString("staffname"));// 发布人
-				vo.setIssuedatetime(new Date(o.getJSONObject("issuedatetime").getJSONObject("map")//发布时间
+				vo.setIssuedatetime(new Date(o.getJSONObject("issuedatetime")
+						.getJSONObject("map")// 发布时间
 						.getLong("time")));
-				vo.setAddress(o.getString("address"));//地址
-				vo.setBatch(o.getInt("batch"));//批次
-				vo.setOtherThing(o.getString("otherThing"));//其他
-				
-				
+				vo.setAddress(o.getString("address"));// 地址
+				vo.setBatch(o.getInt("batch"));// 批次
+				vo.setOtherThing(o.getString("otherThing"));// 其他
+
 				return vo;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -259,6 +286,7 @@ public class AppContext extends Application {
 		}
 		return null;
 	}
+
 	/**
 	 * 培训列表
 	 * 
